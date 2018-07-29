@@ -89,6 +89,7 @@ var Engine = (function(global) {
      * the data/properties related to the object. Do your drawing in your
      * render methods.
      */
+    let allEnemies = [new Enemy()];
     function updateEntities(dt) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
