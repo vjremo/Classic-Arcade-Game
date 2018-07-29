@@ -16,6 +16,10 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    this.x += 1;
+    if (this.x > 500) {
+        this.x = 0;
+    }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -34,6 +38,9 @@ var Player = function () {
 // Update the Player's position, required method for game
 // Parameter: dt, a time delta between ticks
 Player.prototype.update = function (dt) {
+    if(this.y>350|| this.y < -10){
+        this.y=350;
+    }
 };
 // Draw the player on the screen, required method for game
 Player.prototype.render = function () {
