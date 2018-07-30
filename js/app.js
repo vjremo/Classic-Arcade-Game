@@ -38,9 +38,6 @@ var Player = function () {
 // Update the Player's position, required method for game
 // Parameter: dt, a time delta between ticks
 Player.prototype.update = function (dt) {
-    if(this.y>350|| this.y < -10){
-        this.y=350;
-    }
 };
 // Draw the player on the screen, required method for game
 Player.prototype.render = function () {
@@ -50,16 +47,26 @@ Player.prototype.render = function () {
 Player.prototype.handleInput = function (dt) {
     switch (dt) {
         case "up":
-            this.y -= 30;
+            if (this.y > -10) {
+                this.y -= 30;
+            }
             break;
         case "down":
-            this.y += 30;
+            if (this.y < 380 ) {
+                this.y += 30;
+            }
             break;
         case "left":
-            this.x -= 30;
+            
+            if (this.x > -10) {
+                this.x -= 30;
+            }
             break;
         case "right":
-            this.x += 30;
+            
+            if (this.x < 410) {
+                this.x += 30;
+            }
             break;
     }
 };
