@@ -28,6 +28,13 @@ var Engine = (function(global) {
     canvas.height = 606;
     doc.body.appendChild(canvas);
 
+    //Variable to hold animation request ID
+    let requestId;
+
+    //Variable to hold Modal element and replay button selector
+    const modalElement = document.querySelector('.modal_bg');
+    const replayButton = document.querySelector('.replay_button');
+
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
@@ -52,10 +59,19 @@ var Engine = (function(global) {
          */
         lastTime = now;
 
-        /* Use the browser's requestAnimationFrame function to call this
+        /* If the player reaches watermark goal, then cancel request for animation 
+         * and display message through modal
+         * If not, then use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        win.requestAnimationFrame(main);
+        if(player.gameOver === true){
+            win.cancelAnimationFrame(requestId);
+            flipModal();
+            //Adds click event listener to replay button in modal
+            replayButton.addEventListener('click', resetGame);
+        }else{
+            requestId = win.requestAnimationFrame(main);
+        }
     }
 
     /* This function does some initial setup that should only occur once,
@@ -79,7 +95,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions(player);
     }
 
     /* This is called by the update function and loops through all of the
@@ -89,7 +105,7 @@ var Engine = (function(global) {
      * the data/properties related to the object. Do your drawing in your
      * render methods.
      */
-    let allEnemies = [new Enemy(10, 100), new Enemy(10, 125), new Enemy(10, 150)];
+    
     function updateEntities(dt) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
@@ -97,6 +113,26 @@ var Engine = (function(global) {
         player.update();
     }
 
+    /* This function iterates through all enemy objects,
+    * compares it's axis coordinates with player object's position
+    * and if their axis aligns then it calls function to reset player position
+    * If player reaches the goal, then it sets gameOver flag to true and breaks the loop
+    * of verifying collision condition 
+    */
+    function checkCollisions(player){
+        for(let enemy of allEnemies){
+            //If player reaches top of canvas, end game
+            if (player.y === -25) {
+                player.gameOver = true;
+                break;
+            }
+
+            //Verifies position of player and enemy objects
+            if (player.y === enemy.y && (enemy.x + enemy.moveHorizontal / 2 > player.x && enemy.x < player.x + player.moveHorizontal / 2)) {
+                player.resetPlayer();
+        }
+    }
+    }
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
      * game tick (or loop of the game engine) because that's how games work -
@@ -165,6 +201,14 @@ var Engine = (function(global) {
         // noop
     }
 
+    //Function to open or hide modal
+    function flipModal() {
+        modalElement.classList.toggle('vanish');        
+    }
+    //Resets Game by reloading window
+    function resetGame() {
+        window.location.reload();
+    }
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
@@ -174,7 +218,8 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-princess-girl.png'
     ]);
     Resources.onReady(init);
 
