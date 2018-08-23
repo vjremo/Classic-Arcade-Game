@@ -118,6 +118,8 @@ var Engine = (function(global) {
     * and if their axis aligns then it calls function to reset player position
     * If player reaches the goal, then it sets gameOver flag to true and breaks the loop
     * of verifying collision condition 
+    * Function below partly inspired from 
+    * source - https://matthewcranford.com/arcade-game-walkthrough-part-6-collisions-win-conditions-and-game-resets/
     */
     function checkCollisions(player){
         for(let enemy of allEnemies){
